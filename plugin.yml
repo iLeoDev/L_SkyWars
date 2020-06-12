@@ -1,0 +1,6 @@
+name: L_Skywars
+version: "0.8-InDev"
+api: ["1.0.5"]
+author: LeooDev
+description: Skywars
+main: leodev.slice.Loader
