@@ -16,6 +16,18 @@ public interface Mensagens {
 	public String SCOREBOARD_4 = "TESTE";
 	public String SCOREBOARD_5 = "%s";
 	
+	public String SCOREBOARD_GAME_1 = "§c%s";
+	public String SCOREBOARD_GAME_2 = "§7Jogadores: §7[§f%s/%s§7]";
+	public String SCOREBOARD_GAME_3 = "§7Kills:§c§l EM BREVE";
+	public String SCOREBOARD_GAME_4 = "TESTE";
+	public String SCOREBOARD_GAME_5 = "%s";
+	
+	public String SCOREBOARD_FINAL_1 = "§c%s";
+	public String SCOREBOARD_FINAL_2 = "§7Jogadores: §7[§f%s/%s§7]";
+	public String SCOREBOARD_FINAL_3 = "§7Kills:§c§l EM BREVE";
+	public String SCOREBOARD_FINAL_4 = "TESTE";
+	public String SCOREBOARD_FINAL_5 = "%s";
+	
 	public String FORM_NAME_PLAYER = "§b§lArenas";
 	public String FORM_NAME_STAFF = "§b§lCONFIGS";
 	public String FORM_PLAYER_CONTENT = "§bClique em alguma sala disponivel para entrar.\n §7(§fBranco: §fBUGADA, §aVERDE: §fDISPONIVEL, §4VERMELHO: §fEM JOGO, §6OUR0: §fREINICIANDO, §cVINHO: §fNÃO CONFIGURADA)";
@@ -31,11 +43,23 @@ public interface Mensagens {
 	public String FORM_SET_SPAWNS_BUTTON_NAME = "§7SetSpawns";
 	public String FORM_STAFF_PLAY_BUTTON = "§bJogar";
 	public String FORM_CONTENT_ARENA_IS_IN_GAME = "§4Está arena está em jogo!";
+	public String FORM_STAFF_CREATE_MAX_PLAYER = "§cMáximo de jogadores na sala"; 
+	public String FORM_STAFF_SETSPAWNS_OPEN_NAME = "§aArena setspawns";
+	public String FORM_STAFF_SETSPAWNS_SPAWN_NAME = "§aSetSpawn ID";
+	//o %s é o nome da arena. Não retire isto!!!!!
+	public String FORM_STAFF_SETSPAWNS_OPEN_CONTENT = "§aSete os spawns das arenas aqui";
+	public String FORM_STAFF_SETSPAWNS_STEP_NAME = "§aArena disponiveis";
+	public String FORM_STAFF_SETSPAWNS_SPAWN = "§aID do spawn";
+	public String FORM_STAFF_SETSPAWNS_JOINED = "§aID do spawn";
+	public String FORM_WAIT_AREA_SET_SUCESS = "§aWaitArea da sala §f%s §asetada com sucesso!";
+	public String FORM_WAIT_AREA_SET = "§aWaitArea set";
+	public String FORM_WAIT_AREA_SET_CONTENT = "§aEscolha aqui a arena para setar a waitarea!";
 	
 	public String PLAYER_WIN_GAME_TITLE = prefix;
 	public String PLAYER_WIN_GAME_SUBTITLE = "§aParabens você ganhou!";
 	
 	public String PLAYER_DEATH = "§4Você morreu e entrou no modo espectador.";
+
 	
 
 }

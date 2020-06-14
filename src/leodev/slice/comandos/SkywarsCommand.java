@@ -19,6 +19,7 @@ import cn.nukkit.form.element.ElementButton;
 import cn.nukkit.form.element.ElementButtonImageData;
 import cn.nukkit.form.element.ElementDropdown;
 import cn.nukkit.form.element.ElementInput;
+import cn.nukkit.form.element.ElementSlider;
 import cn.nukkit.form.element.ElementStepSlider;
 import cn.nukkit.form.element.ElementToggle;
 import cn.nukkit.form.response.FormResponseCustom;
@@ -26,6 +27,7 @@ import cn.nukkit.form.response.FormResponseSimple;
 import cn.nukkit.form.window.FormWindow;
 import cn.nukkit.form.window.FormWindowCustom;
 import cn.nukkit.form.window.FormWindowSimple;
+import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.utils.ConfigSection;
 
@@ -49,6 +51,7 @@ public class SkywarsCommand extends Command implements Listener{
 					simple.addButton(new ElementButton(Mensagens.FORM_CREATE_BUTTON_NAME));
 					simple.addButton(new ElementButton(Mensagens.FORM_SET_SPAWNS_BUTTON_NAME));
 					simple.addButton(new ElementButton(Mensagens.FORM_STAFF_PLAY_BUTTON));
+					simple.addButton(new ElementButton(Mensagens.FORM_WAIT_AREA_SET));
 					p.showFormWindow(simple);
 				}else {
 				FormWindowSimple simple = new FormWindowSimple(Mensagens.FORM_NAME_PLAYER, Mensagens.FORM_PLAYER_CONTENT);
@@ -164,10 +167,12 @@ public class SkywarsCommand extends Command implements Listener{
 	            		List<String> steps = new ArrayList<>();
 	            		for(Level lvl : this.pl.getServer().getLevels().values()){
 	            			steps.add(lvl.getName() + "");
+	            			pl.getServer().loadLevel(lvl.getName());
 	            		}
 	            		custom.addElement(new ElementToggle(Mensagens.FORM_ACTIVATE_WORLD_TP));
 						custom.addElement(new ElementDropdown(Mensagens.FORM_WORLD_TP, steps));
 	            		custom.addElement(new ElementInput(Mensagens.FORM_CREATE_ARENA, Mensagens.FORM_CREATE_PLACEHOLDER));
+	            		custom.addElement(new ElementSlider(Mensagens.FORM_STAFF_CREATE_MAX_PLAYER, 1, 16, 1, 12));
 	            		player.showFormWindow(custom);
 	            		
 	            	}else if(text.equals(Mensagens.FORM_STAFF_PLAY_BUTTON)){
@@ -195,9 +200,55 @@ public class SkywarsCommand extends Command implements Listener{
 	    				 player.showFormWindow(simple);
 	    				 
 	            	}else if(text.equals(Mensagens.FORM_SET_SPAWNS_BUTTON_NAME)){
-	            		
+	            		FormWindowSimple simple = new FormWindowSimple(Mensagens.FORM_STAFF_SETSPAWNS_OPEN_NAME, Mensagens.FORM_STAFF_SETSPAWNS_OPEN_CONTENT);
+	            		for(SkywarsAPI sky : this.pl.salas){
+	            			if(sky.getState().equals(Estado.ESPERANDO) || sky.getState() == null){
+	            				if(sky.getConfigurada() == 0)
+	            				simple.addButton(new ElementButton(sky.getName()));
+	            			}
+	            		}
+	            		 player.showFormWindow(simple);
+	            	}else if(text.equals(Mensagens.FORM_WAIT_AREA_SET)){
+	            		FormWindowSimple simple = new FormWindowSimple(Mensagens.FORM_WAIT_AREA_SET, Mensagens.FORM_WAIT_AREA_SET);
+	            		for(SkywarsAPI sky : this.pl.salas){
+	            			if(sky.getState().equals(Estado.ESPERANDO) || sky.getState() == null){
+	            				if(sky.getConfigurada() == 0 || sky.configurada == 0)
+	            				simple.addButton(new ElementButton(sky.getName()));
+	            			}
+	            		}
+	            		 player.showFormWindow(simple);
 	            	}
                 	break;
+	            case Mensagens.FORM_STAFF_SETSPAWNS_OPEN_NAME:
+	            	if(this.pl.getSkywars(text) != null){
+	            		SkywarsAPI sky = this.pl.getSkywars(text);
+	            		if(sky.getState().equals(Estado.ESPERANDO) || sky.getState() == null){
+            				if(sky.getConfigurada() == 0){
+            					if(this.pl.setingSpawns.containsKey(player)){
+            						FormWindowSimple simple = new FormWindowSimple(Mensagens.FORM_STAFF_SETSPAWNS_OPEN_NAME, Mensagens.FORM_STAFF_SETSPAWNS_OPEN_CONTENT);
+            	            		for(SkywarsAPI skys : this.pl.salas){
+            	            			if(skys.getState().equals(Estado.ESPERANDO) || skys.getState() == null){
+            	            				if(skys.getConfigurada() == 0)
+            	            				simple.addButton(new ElementButton(skys.getName()));
+            	            			}
+            	            			 
+            	            		}
+            	            		player.showFormWindow(simple);
+            					}else {
+            						this.pl.setingSpawns.put(player, sky);
+            						player.sendMessage(this.pl.setingSpawns.size() + "");
+            						player.sendMessage(Mensagens.FORM_STAFF_SETSPAWNS_JOINED);
+            						Item item = new Item(Item.STICK);
+            						item.setCustomName("§a§lSETADOR DE SPAWNS");
+            						player.getInventory().clearAll();
+            						player.setGamemode(1);
+            						player.getInventory().setItem(0, item);
+            						
+            					}
+            				}
+	            		}
+	            	}
+	            	break;
 	            case Mensagens.FORM_NAME_PLAYER:
 	            	if(text.startsWith("§a")){
                         if(this.pl.getSkywars(text.replaceAll("§a", "")) != null){
@@ -331,6 +382,17 @@ public class SkywarsCommand extends Command implements Listener{
 	    				 player.showFormWindow(simple);
 	            	}
                 	break;
+	            case Mensagens.FORM_WAIT_AREA_SET:
+	            	if(this.pl.getSkywars(text) != null){
+	            		SkywarsAPI sky = this.pl.getSkywars(text);
+	            		if(sky.getState().equals(Estado.ESPERANDO) || sky.getState() == null){
+            				if(sky.getConfigurada() == 0){
+            					sky.waitArea = player.getLocation();
+            					player.sendTip(Mensagens.WAIT_AREA_SUCESS_SET);
+            					}
+            				}
+	            		}
+	            	break;
 	            
 	            }
 	        }else if(window instanceof FormWindowCustom){
@@ -339,14 +401,16 @@ public class SkywarsCommand extends Command implements Listener{
 	            {
 	            case Mensagens.FORM_CREATE_NAME:
 	            	String texts = (String) responses.getResponse(2);
+	            	float maxPlayers = (float)responses.getResponse(3);
 	            	if(this.pl.getSkywars(texts) == null){
-						SkywarsAPI sky = new SkywarsAPI(this.pl, texts);
+						SkywarsAPI sky = new SkywarsAPI(this.pl, texts,(int) maxPlayers);
 						player.sendMessage(String.format(Mensagens.ARENA_CRIADA, texts));
 						this.pl.salas.add(sky);
 						if((boolean)responses.getResponse(0) ==  true){
 							String l = responses.getResponse(1).toString();
 							Level lvl = this.pl.getServer().getLevelByName(l);
 							player.teleport(lvl.getSpawnLocation());
+							this.pl.saveMap(lvl);
 							}
 					}else {
 						player.sendMessage(Mensagens.ARENA_JA_EXISTE);
